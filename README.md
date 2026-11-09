@@ -4,7 +4,11 @@ A working Sparrow Works demonstration of reliable enquiry intake, human-approved
 
 **[Watch the captioned two-minute live demonstration](portfolio/Intake-Rescue-Two-Minute-Demo.mp4)** — genuine browser footage of intake, duplicate prevention, explicit approval, HTTP 503 recovery and one simulated receipt. The edit shortens idle time and is labelled throughout. [Recording evidence](portfolio/recording-evidence.json).
 
+[Download the demonstration release](https://github.com/ANKOHR/intake-rescue/releases/tag/v0.1.0) for the MP4 and source ZIP.
+
 **Verified on 9 November 2026:** 49 automated tests passed; 14 real n8n integration scenarios passed; an actual application-process termination recovered through n8n with one simulator receipt. Chrome review, correction, approval and rejection were exercised. See [test results](docs/TEST-RESULTS.md) and [evidence](evidence/).
+
+**Docker verification also passed:** the supplied Compose stack built and started on an Ubuntu GitHub runner, with the same 49 automated tests and 14 genuine n8n scenarios passing. [Public CI run](https://github.com/ANKOHR/intake-rescue/actions/runs/42654424357) · [Container evidence](evidence/docker/verification.json).
 
 ![Genuine n8n intake canvas](evidence/n8n-intake-editor.jpg)
 
@@ -57,7 +61,7 @@ Use `--new-event` to create another synthetic demonstration enquiry; it changes 
 
 ## Docker Compose
 
-Docker is **not installed in the verification environment**, so the Compose deployment is supplied but has not been runtime-tested. The npm installation above was genuinely run.
+Docker is not installed on the original Windows development machine. The supplied Compose deployment was subsequently built and runtime-tested on a GitHub-hosted Ubuntu runner, including the n8n initializer and named volumes. Both this container path and the direct npm installation have genuine runtime evidence.
 
 ```sh
 python scripts/init_env.py

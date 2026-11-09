@@ -2,7 +2,7 @@
 
 This is a verified local demonstration, not a claim of production readiness or a paid client deployment.
 
-- Docker is absent in the build environment. Compose/Dockerfile are supplied and structurally inspected; container startup, image availability and mounted-volume behaviour were not exercised. The genuine runtime evidence used n8n 2.46.7 on Node.js 24.14.0 with Python 3.10.11 on Windows.
+- Docker is absent on the original Windows machine. The supplied Docker Compose stack was subsequently built, started and exercised on a GitHub-hosted Ubuntu runner, with 49 tests and 14 genuine n8n scenarios passing. The original Windows runtime evidence remains separate. This is a tested local container deployment path, not a production hosting or availability guarantee.
 - Multiple sources share an authenticated JSON webhook contract. Native vendor-specific adapters and webhook-signature verification are not included.
 - SQLite suits this local workload. No load benchmark, distributed workers, high availability, network filesystem support or production PostgreSQL migration is claimed.
 - Email/phone matching is conservative and UK-oriented. Shared inboxes, recycled phone numbers and legitimate identity changes need a client-specific reconciliation policy. The console resolves conflicts by correcting the lead; it does not offer a broad contact-merge tool.
@@ -19,4 +19,4 @@ This is a verified local demonstration, not a claim of production readiness or a
 - No formal accessibility audit, penetration test, browser-matrix test, full dependency vulnerability audit, backup restoration drill or performance SLA was completed. The Python test suite reports one upstream Starlette/AnyIO deprecation warning; it does not cause a failure.
 - There is one initial idempotent schema migration; future migrations need explicit upgrade/rollback tests. The simulator shares the application database, so a real provider's independently retained state is a further boundary to test.
 
-Priority next steps for an authorised real implementation: agree identity/repeat/permission rules; choose the actual delivery provider and its reconciliation contract; add per-person access and monitored backups; test the container target; exercise the complete client-specific source-to-provider flow with the agreed data policy.
+Priority next steps for an authorised real implementation: agree identity/repeat/permission rules; choose the actual delivery provider and its reconciliation contract; add per-person access and monitored backups; perform a backup restoration drill; exercise the complete client-specific source-to-provider flow with the agreed data policy.

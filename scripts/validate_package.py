@@ -39,6 +39,14 @@ runtime=json.loads((ROOT/'evidence'/'n8n-integration.json').read_text())
 assert len(runtime['results'])==14 and all(r['result']=='PASS' for r in runtime['results'])
 restart=json.loads((ROOT/'evidence'/'process-restart.json').read_text())
 assert restart['result']=='PASS' and restart['provider_receipts_for_key']==1
+docker=ROOT/'evidence'/'docker'
+if docker.exists():
+    verification=json.loads((docker/'verification.json').read_text())
+    assert verification['result']=='PASS'
+    docker_suite=ET.parse(docker/'ci-unit-tests.xml').getroot().find('testsuite')
+    assert docker_suite.attrib['tests']=='49' and docker_suite.attrib['failures']=='0' and docker_suite.attrib['errors']=='0'
+    docker_runtime=json.loads((docker/'n8n-integration.json').read_text())
+    assert len(docker_runtime['results'])==14 and all(r['result']=='PASS' for r in docker_runtime['results'])
 
 # Scan only deliverable candidates. Keep private values out of diagnostics.
 secrets=[]

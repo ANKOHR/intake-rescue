@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "workflow_run_id": 42654424357,
+  "workflow_url": "https://github.com/ANKOHR/intake-rescue/actions/runs/42654424357",
+  "tested_commit": "b3ea40c3e59b061cfb306c0a86fc016cb059939f",
+  "runner": "ubuntu-24.04",
+  "unit_tests": 49,
+  "real_n8n_scenarios": 14,
+  "deployment": "supplied Docker Compose stack, including named volumes and n8n initializer",
+  "artifact_id": 13691617121
+}

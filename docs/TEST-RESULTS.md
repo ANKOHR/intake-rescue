@@ -57,6 +57,8 @@ The final browser checklist is recorded in [browser-qa.json](../evidence/browser
 
 Windows; Python 3.10.11; Node.js 24.14.0; npm 11.9.0; n8n 2.46.7. Python dependencies and n8n transitive dependencies are locked in the repository. SQLite business state and n8n state were persisted locally. The initial npm parent-folder resolution was corrected to an isolated workspace runtime, and the added parent dependency was removed.
 
-Docker was not available (`docker` was absent from command discovery). **Docker Compose was not executed.** It is supplied as an unverified alternative deployment path. No public hosting, GitHub publication, real-account integration, external email delivery, load benchmark, security certification or disaster-recovery restore drill is claimed.
+Docker was absent from the original Windows command discovery. In a subsequent approved publication step, the supplied Compose stack was built and started on an Ubuntu GitHub-hosted runner. All 49 automated tests and all 14 real n8n integration scenarios passed there, including an SQL invariant audit executed inside the application container. The initializer, official pinned n8n image and named-volume configuration were exercised. [Public CI run](https://github.com/ANKOHR/intake-rescue/actions/runs/42654424357) · [Container evidence](../evidence/docker/verification.json).
+
+The source repository and reviewed two-minute recording have been published as portfolio material. The application itself remains local. No real-account integration, external email delivery, load benchmark, security certification or disaster-recovery restore drill is claimed.
 
 The passing evidence supports the demonstrated local behaviours and documented simulator contract. It does not establish operational guarantees for an unimplemented real provider or a future production deployment.

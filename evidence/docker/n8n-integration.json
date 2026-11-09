@@ -1,0 +1,132 @@
+{
+  "run_prefix": "38f0fd199a",
+  "delivery_mode": "simulated",
+  "n8n_version": "2.46.7",
+  "timestamp_utc": "2026-11-09T16:26:58.212779+00:00",
+  "results": [
+    {
+      "scenario": "Real n8n intake, qualification and draft",
+      "result": "PASS",
+      "proof": {
+        "lead_id": "f10312f7-b238-4d35-a198-2f713d515b01",
+        "correlation_id": "e50031fb-366f-4f33-be98-a293bdd3e06b"
+      }
+    },
+    {
+      "scenario": "Repeated webhook suppressed",
+      "result": "PASS",
+      "proof": {
+        "same_lead_id": true
+      }
+    },
+    {
+      "scenario": "Cross-source contact recognised",
+      "result": "PASS",
+      "proof": {
+        "distinct_enquiries": true,
+        "shared_contact": true
+      }
+    },
+    {
+      "scenario": "No delivery before approval",
+      "result": "PASS",
+      "proof": {
+        "receipt_count_unchanged": true
+      }
+    },
+    {
+      "scenario": "Approved delivery and repeated approval",
+      "result": "PASS",
+      "proof": {
+        "state": "sent",
+        "outbox_rows": 1
+      }
+    },
+    {
+      "scenario": "503 failure and durable retry",
+      "result": "PASS",
+      "proof": {
+        "statuses": [
+          503,
+          200
+        ],
+        "backoff_respected": true
+      }
+    },
+    {
+      "scenario": "429 Retry-After and recovery",
+      "result": "PASS",
+      "proof": {
+        "statuses": [
+          429,
+          200
+        ]
+      }
+    },
+    {
+      "scenario": "Permanent provider error dead-lettered",
+      "result": "PASS",
+      "proof": {
+        "attempts": 1,
+        "status": 400
+      }
+    },
+    {
+      "scenario": "Manual correction and rejection",
+      "result": "PASS",
+      "proof": {
+        "rejected": true,
+        "no_outbox": true
+      }
+    },
+    {
+      "scenario": "Reply permission enforced",
+      "result": "PASS",
+      "proof": {
+        "state": "no_permission"
+      }
+    },
+    {
+      "scenario": "Interrupted intake resumed by n8n scheduler",
+      "result": "PASS",
+      "proof": {
+        "lead_id": "c96876c3-4289-4bd2-b667-55374f1a1349"
+      }
+    },
+    {
+      "scenario": "Real n8n node failure and error workflow",
+      "result": "PASS",
+      "proof": {
+        "webhook_status": 500,
+        "redacted_failure_recorded": true
+      }
+    },
+    {
+      "scenario": "n8n webhook authentication",
+      "result": "PASS",
+      "proof": {
+        "unauthorized_status": 403
+      }
+    },
+    {
+      "scenario": "Independent database invariant audit",
+      "result": "PASS",
+      "proof": {
+        "unapproved_receipts": 0,
+        "duplicate_outbox_groups": 0,
+        "simulated_receipts": 3
+      }
+    }
+  ],
+  "metrics": {
+    "total_enquiries": 8,
+    "qualified_leads": 8,
+    "duplicate_submissions": 1,
+    "pending_reviews": 0,
+    "pending_approvals": 2,
+    "queued_followups": 0,
+    "failed_executions": 2,
+    "retry_history": 2,
+    "simulated_deliveries": 3
+  }
+}

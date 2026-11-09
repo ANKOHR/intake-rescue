@@ -1,0 +1,11 @@
+{
+  "duration_seconds": 120,
+  "resolution": "1440x944",
+  "audio": "silent captioned",
+  "full_decode": "PASS",
+  "key_scene_review": "PASS",
+  "credentials_visible": false,
+  "synthetic_data_only": true,
+  "sha256": "2ea4a9c7ec2d8d06a04e55e55a9ceffc12e50db155223fe53ddbae3f03b1ebcd",
+  "bytes": 1109649
+}

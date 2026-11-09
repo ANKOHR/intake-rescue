@@ -2,7 +2,7 @@
 
 [Watch the two-minute MP4](Intake-Rescue-Two-Minute-Demo.mp4).
 
-This is a silent, captioned edit of an actual live browser recording on 9 November 2026. The source capture lasted approximately 3 minutes 50 seconds. The two-minute version uses chronological excerpts, shortens idle time and holds the delivery canvas for explanation. Captions identify it throughout as an edited local demonstration with no customer mailbox connected.
+This is a silent, captioned edit of an actual live browser recording on 9 November 2026. The source capture lasted approximately 3 minutes 50 seconds. The two-minute version uses chronological excerpts, adjusts section timing for pacing and holds the delivery canvas for explanation. It does not claim real-time performance. Captions identify it throughout as an edited local demonstration with no customer mailbox connected.
 
 The recording shows a genuine n8n intake canvas; a successful authenticated synthetic webhook; repeat delivery returning the same lead ID; explicit approval of the draft through the operations console; a recorded 503 followed by 200 using the same outbox; the n8n delivery/retry canvas; and a final independent receipt count of one.
 

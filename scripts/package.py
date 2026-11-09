@@ -25,8 +25,8 @@ files.sort(key=lambda p:p.as_posix())
 # Bound traversal with explicit exclusions when inspecting the final list; secrets themselves
 # are never read into a manifest. The ZIP is outside the repository to avoid recursive inclusion.
 MANIFEST.parent.mkdir(exist_ok=True)
-MANIFEST.write_text(json.dumps({'algorithm':'SHA-256','files':{
-    p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in files}},indent=2)+'\n')
+MANIFEST.write_bytes((json.dumps({'algorithm':'SHA-256','files':{
+    p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in files}},indent=2)+'\n').encode('utf-8'))
 target=ROOT.parent/'Intake-Rescue-Sparrow-Works.zip'
 with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
     for p in [*files,MANIFEST]:z.write(p,Path(ROOT.name)/p.relative_to(ROOT))

@@ -34,6 +34,7 @@ The default delivery adapter calls a local HTTP simulator. It records receipts r
 - **Browser-exercised operations.** In Chrome, an invalid enquiry was corrected, a new draft generated, a simulated 503 scenario approved and recovered, and a separate draft rejected.
 - **Independent SQL checks** found no unapproved simulator receipts and no duplicated outbox groupings in the verified state.
 - **All four canvases opened in the genuine n8n editor.** Screenshots and structured results are included in the repository.
+- **Docker Compose independently exercised on Linux.** The supplied stack started on a GitHub-hosted Ubuntu runner and passed the same 49 automated tests and 14 genuine n8n scenarios. [Public verification run](https://github.com/ANKOHR/intake-rescue/actions/runs/42654424357).
 
 The development checks exposed a misassigned intake-node credential. It was corrected and the real runtime suite passed afterward. That is why this portfolio includes operational evidence as well as source files.
 
@@ -41,7 +42,7 @@ The development checks exposed a misassigned intake-node credential. It was corr
 
 Sparrow Works can implement a practical n8n workflow with data validation, database-backed duplicate controls, human review, approval gates, retry handling and an understandable handover. The system demonstrates the engineering habits behind a maintainable automation engagement.
 
-It does not claim a measured revenue increase, hours saved or a customer deployment. Docker Compose is provided but was not exercised because Docker was absent. The verified installation ran locally through npm. External exactly-once delivery remains dependent on a real provider's idempotency and reconciliation contract.
+It does not claim a measured revenue increase, hours saved or a customer deployment. Both the original Windows/npm installation and the subsequent Docker Compose installation have runtime evidence. External exactly-once delivery remains dependent on a real provider's idempotency and reconciliation contract.
 
 Sparrow Works' previously described paid Webflow, Zapier and Airtable application workflow is separate experience. This new n8n system was not deployed for that client.
 
