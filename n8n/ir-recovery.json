@@ -1,0 +1,271 @@
+{
+  "id": "ir-recovery",
+  "name": "Intake Rescue \u00b7 02 Interrupted intake recovery",
+  "active": false,
+  "nodes": [
+    {
+      "id": "every-5-seconds",
+      "name": "Every 5 seconds",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        420
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "run-recovery-now",
+      "name": "Run recovery now",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        180
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "intake-rescue/recover",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "webhookId": "ir-run-recovery-now"
+    },
+    {
+      "id": "recover-expired-delivery-leases",
+      "name": "Recover expired delivery leases",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/internal/recover' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "find-interrupted-intake-stages",
+      "name": "Find interrupted intake stages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.IR_API_URL + '/internal/pending' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "each-unfinished-enquiry",
+      "name": "Each unfinished enquiry",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        660,
+        300
+      ],
+      "parameters": {
+        "fieldToSplitOut": "leads",
+        "options": {}
+      }
+    },
+    {
+      "id": "resume-qualification",
+      "name": "Resume qualification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/internal/leads/' + $json.lead_id + '/qualify' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "resume-draft-generation",
+      "name": "Resume draft generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/internal/leads/' + $json.lead_id + '/draft' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "note-24020",
+      "name": "Note 24020",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        20
+      ],
+      "parameters": {
+        "content": "## Durable resumption\nEvery 5 seconds (or authenticated manual tick): expire stale delivery leases, then resume received/qualified leads. Stage APIs are idempotent.\nReview and approval are never bypassed.",
+        "width": 850,
+        "height": 180
+      }
+    }
+  ],
+  "connections": {
+    "Every 5 seconds": {
+      "main": [
+        [
+          {
+            "node": "Recover expired delivery leases",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run recovery now": {
+      "main": [
+        [
+          {
+            "node": "Recover expired delivery leases",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recover expired delivery leases": {
+      "main": [
+        [
+          {
+            "node": "Find interrupted intake stages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find interrupted intake stages": {
+      "main": [
+        [
+          {
+            "node": "Each unfinished enquiry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Each unfinished enquiry": {
+      "main": [
+        [
+          {
+            "node": "Resume qualification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resume qualification": {
+      "main": [
+        [
+          {
+            "node": "Resume draft generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "timezone": "Europe/London",
+    "executionTimeout": 60,
+    "errorWorkflow": "ir-errors"
+  },
+  "pinData": {},
+  "tags": []
+}

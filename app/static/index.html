@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Intake Rescue · Sparrow Works</title><link rel="icon" href="/static/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" defer></script></head>
+<body>
+<header><a class="brand" href="/">SPARROW<span>WORKS</span></a><div class="header-right"><span class="mode">● LOCAL DEMONSTRATION</span><button id="logout" hidden>Lock console</button></div></header>
+<main>
+<section class="intro"><div><p class="eyebrow">OPERATIONS / INTAKE RESCUE</p><h1>Every enquiry.<br>A clear next step.</h1><p class="subtitle">Review the exceptions. Approve the follow-up. Keep the evidence.</p></div><aside><span class="live-dot"></span> Simulated delivery only<p>Customer messages require a recorded human approval. No email account is connected.</p></aside></section>
+<section id="login" class="login panel"><h2>Open the operations console</h2><p>Use the admin token from your local <code>.env</code>. It stays in this tab’s memory.</p><form id="login-form"><label>Operator name<input id="operator" required maxlength="80" autocomplete="nickname" placeholder="Demo operator"></label><label>Admin token<input id="token" type="password" required autocomplete="off" placeholder="Paste local admin token"></label><button class="primary">Unlock console</button></form></section>
+<p id="notice" role="status" aria-live="polite"></p>
+<div id="console" hidden>
+<section class="toolbar"><div><h2>Operations overview</h2><p id="updated">Connecting…</p></div><button id="refresh">Refresh data ↻</button></section>
+<section id="metrics" class="metrics" aria-label="Operational metrics"></section>
+<section class="workspace">
+<div class="panel enquiries"><div class="panel-heading"><h2>Enquiry inbox</h2><span id="lead-count"></span></div><div class="filters"><label class="search-label">Search<input id="search" placeholder="Name, email or source"></label><label>Status<select id="filter"><option value="all">All enquiries</option><option value="review">Needs review</option><option value="awaiting_approval">Awaiting approval</option><option value="queued">Queued</option><option value="sent">Delivered</option><option value="failed">Failed</option><option value="no_permission">No reply permission</option><option value="rejected">Rejected</option></select></label></div><div id="lead-list"></div></div>
+<section id="detail" class="panel detail" aria-label="Selected enquiry"><div class="empty"><span>↗</span><h2>A human stays in control.</h2><p>Select an enquiry to inspect its original payload, review the draft and trace processing history.</p></div></section>
+</section>
+<section class="panel activity"><div class="panel-heading"><h2>Delivery and recovery log</h2><span>Last 50 attempts</span></div><div class="table-scroll"><table><thead><tr><th>Time</th><th>Outbox</th><th>Attempt</th><th>Outcome</th><th>HTTP</th><th>Next eligible</th></tr></thead><tbody id="attempts"></tbody></table></div><div id="dead-letters"></div></section>
+</div>
+<footer><span>SPARROW WORKS / INTAKE RESCUE</span><span>Synthetic enquiries · Deterministic rules · Approval required</span></footer>
+</main></body></html>

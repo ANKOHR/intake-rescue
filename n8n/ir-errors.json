@@ -1,0 +1,87 @@
+{
+  "id": "ir-errors",
+  "name": "Intake Rescue \u00b7 04 Orchestration error ledger",
+  "active": false,
+  "nodes": [
+    {
+      "id": "workflow-failed",
+      "name": "Workflow failed",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "record-redacted-execution-failure",
+      "name": "Record redacted execution failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/internal/orchestration-error' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({workflow_id:$json.workflow.id, execution_id:$json.execution.id || 'trigger', node:$json.execution.lastNodeExecuted || 'unknown'}) }}"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "note-020",
+      "name": "Note 020",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        20
+      ],
+      "parameters": {
+        "content": "## Redacted operational evidence\nStore workflow ID, execution ID and node name only. Raw exception bodies and payloads are deliberately excluded.\nIf the service is down, inspect n8n failed execution metadata.",
+        "width": 660,
+        "height": 180
+      }
+    }
+  ],
+  "connections": {
+    "Workflow failed": {
+      "main": [
+        [
+          {
+            "node": "Record redacted execution failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "timezone": "Europe/London",
+    "executionTimeout": 60
+  },
+  "pinData": {},
+  "tags": []
+}

@@ -1,0 +1,59 @@
+name: intake-rescue
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      IR_DATABASE: /srv/data/intake.db
+      IR_SIMULATOR_URL: http://127.0.0.1:8765/simulator/send
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - lead_data:/srv/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  n8n-init:
+    image: docker.n8n.io/n8nio/n8n:2.46.7
+    entrypoint: ["node", "/bootstrap/n8n-bootstrap.js"]
+    environment: &n8n_env
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?Generate .env first}
+      IR_INTAKE_TOKEN: ${IR_INTAKE_TOKEN:?Generate .env first}
+      IR_WORKER_TOKEN: ${IR_WORKER_TOKEN:?Generate .env first}
+      IR_API_URL: http://app:8765
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+      N8N_TEMPLATES_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      N8N_SECURE_COOKIE: "false"
+      N8N_HOST: localhost
+      N8N_PROTOCOL: http
+      GENERIC_TIMEZONE: Europe/London
+      EXECUTIONS_DATA_SAVE_ON_ERROR: none
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: none
+      EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS: "false"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n:/workflows:ro
+      - ./scripts/n8n-bootstrap.js:/bootstrap/n8n-bootstrap.js:ro
+    depends_on:
+      app:
+        condition: service_healthy
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.46.7
+    restart: unless-stopped
+    environment: *n8n_env
+    ports:
+      - "127.0.0.1:5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      n8n-init:
+        condition: service_completed_successfully
+volumes:
+  lead_data:
+  n8n_data:

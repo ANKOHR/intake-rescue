@@ -1,0 +1,9 @@
+{
+  "source": "website",
+  "event_id": "demo-quote-001",
+  "name": "Alex Example",
+  "email": " Alex@Example.test ",
+  "phone": "07700 900123",
+  "message": "Please send a quote for an enquiry intake workflow.",
+  "permission_to_reply": true
+}

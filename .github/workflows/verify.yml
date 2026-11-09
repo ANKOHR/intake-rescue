@@ -1,0 +1,60 @@
+name: Verify application and Docker n8n flow
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install locked Python dependencies
+        run: python -m pip install -r requirements.lock.txt
+      - name: Run the 49 automated scenarios
+        run: python -m pytest -q --junitxml=evidence/ci-unit-tests.xml
+      - name: Generate disposable local tokens
+        run: python scripts/init_env.py
+      - name: Start the supplied Docker Compose stack
+        run: docker compose up --build -d
+      - name: Wait for the published n8n webhook
+        run: |
+          python - <<'PY'
+          import time, httpx
+          deadline=time.monotonic()+180
+          while time.monotonic()<deadline:
+              try:
+                  healthy=httpx.get('http://127.0.0.1:5678/healthz',timeout=2).status_code==200
+                  registered=httpx.post('http://127.0.0.1:5678/webhook/intake-rescue/enquiry',json={},timeout=2).status_code in (401,403)
+                  if healthy and registered:
+                      break
+              except httpx.RequestError:
+                  pass
+              time.sleep(2)
+          else:
+              raise SystemExit('n8n did not become healthy')
+          PY
+      - name: Exercise the genuine Docker n8n flow
+        env:
+          IR_DOCKER_AUDIT: '1'
+        run: python scripts/verify_n8n.py
+      - name: Capture safe container status
+        if: always()
+        run: docker compose ps --all
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: intake-rescue-docker-verification
+          path: |
+            evidence/ci-unit-tests.xml
+            evidence/n8n-integration.json
+      - name: Stop disposable services
+        if: always()
+        run: docker compose down

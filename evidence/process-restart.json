@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "lead_id": "29a0abc2-dd0e-4d26-9c42-475c79a5fa7b",
+  "outbox_id": "6ff023c8-90cc-4be9-a9f0-94eef5d089dd",
+  "real_process_terminated": 10380,
+  "replacement_pid": 7232,
+  "attempt_outcomes": [
+    "interrupted",
+    "sent"
+  ],
+  "provider_receipts_for_key": 1,
+  "stale_worker_status": 409,
+  "event_survived_restart": true,
+  "recovery_driver": "real n8n 5-second scheduler"
+}

@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-09",
+  "browser": "Google Chrome on Windows",
+  "target": "http://127.0.0.1:8765/",
+  "delivery_mode": "simulated",
+  "checks": [
+    {"check": "Protected console unlock with local admin token", "result": "PASS"},
+    {"check": "Search and inspect original incomplete enquiry", "result": "PASS"},
+    {"check": "Correct email and manually select Other", "result": "PASS"},
+    {"check": "Regenerate revision 2 draft without sending", "result": "PASS"},
+    {"check": "Choose atomic 503 simulation scenario and approve in browser", "result": "PASS"},
+    {"check": "Observe real n8n recovery to sent with two attempts", "result": "PASS", "statuses": [503, 200]},
+    {"check": "Reject a separate pending draft in browser", "result": "PASS"},
+    {"check": "Retain original payload and processing history after correction", "result": "PASS"},
+    {"check": "Open and inspect all four genuine n8n canvases", "result": "PASS"},
+    {"check": "Reload final dashboard assets and inspect selected sent enquiry", "result": "PASS"},
+    {"check": "375px mobile viewport", "result": "NOT VERIFIED", "reason": "Viewport override did not change measured Chrome innerWidth (1463px); override reset and extra preview tab closed."}
+  ],
+  "reviewed_enquiry_id": "9623f79c-1a18-4746-b0ae-9a30d0693ef5",
+  "reviewed_outbox_id": "86537e6a-ecd0-452a-832c-bc6d4bf1feb9",
+  "rejected_correlation_id": "2b862a2c-48bf-438d-a2f0-9c4f300897c4",
+  "scope": "Observed desktop interactions and screenshots; no browser-matrix or formal accessibility claim."
+}

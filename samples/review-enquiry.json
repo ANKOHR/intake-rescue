@@ -1,0 +1,8 @@
+{
+  "source": "partner-form",
+  "event_id": "demo-review-001",
+  "name": "Sam Sample",
+  "email": "needs-correction",
+  "message": "Could somebody help with this?",
+  "permission_to_reply": true
+}

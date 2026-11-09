@@ -1,0 +1,56 @@
+{
+  "duration_seconds": 120,
+  "audio": "silent, burned-in captions",
+  "editing": "Chronological excerpts from the actual screen recording; idle time shortened. No synthetic UI states.",
+  "segments": [
+    {
+      "source_start": 3,
+      "source_end": 21,
+      "output_start": 0,
+      "output_seconds": 18,
+      "caption": "Intake Rescue | Sparrow Works"
+    },
+    {
+      "source_start": 37,
+      "source_end": 53,
+      "output_start": 18,
+      "output_seconds": 16,
+      "caption": "Authenticated intake"
+    },
+    {
+      "source_start": 70,
+      "source_end": 82,
+      "output_start": 34,
+      "output_seconds": 18,
+      "caption": "Same event, same lead"
+    },
+    {
+      "source_start": 90,
+      "source_end": 123,
+      "output_start": 52,
+      "output_seconds": 22,
+      "caption": "A person approves the exact draft"
+    },
+    {
+      "source_start": 144,
+      "source_end": 152,
+      "output_start": 74,
+      "output_seconds": 12,
+      "caption": "Temporary failure, then recovery"
+    },
+    {
+      "source_start": 171,
+      "source_end": 175,
+      "output_start": 86,
+      "output_seconds": 14,
+      "caption": "n8n orchestrates the delivery"
+    },
+    {
+      "source_start": 203,
+      "source_end": 223,
+      "output_start": 100,
+      "output_seconds": 20,
+      "caption": "One approved simulated receipt"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "source": "event-form",
+  "event_id": "demo-no-permission-001",
+  "name": "Robin Example",
+  "email": "robin@example.test",
+  "message": "Please share your pricing.",
+  "permission_to_reply": false
+}

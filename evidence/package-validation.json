@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "deliverable_files_checked": 64,
+  "unit_tests": 49,
+  "real_n8n_scenarios": 14,
+  "actual_restart": "PASS",
+  "markdown_links": "PASS",
+  "workflow_graphs": "PASS",
+  "private_value_scan": "PASS"
+}

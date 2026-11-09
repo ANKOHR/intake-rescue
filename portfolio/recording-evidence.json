@@ -1,0 +1,11 @@
+{
+  "lead_id": "81df5589-237a-4082-87cc-502b7295033c",
+  "state": "sent",
+  "approved": true,
+  "attempt_statuses": [
+    503,
+    200
+  ],
+  "simulated_receipts": 1,
+  "real_emails_sent": 0
+}

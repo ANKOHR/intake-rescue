@@ -1,0 +1,297 @@
+{
+  "id": "ir-intake",
+  "name": "Intake Rescue \u00b7 01 Lead intake",
+  "active": false,
+  "nodes": [
+    {
+      "id": "authenticated-enquiry",
+      "name": "Authenticated enquiry",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "intake-rescue/enquiry",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-intake-auth",
+          "name": "Intake Rescue \u00b7 Intake"
+        }
+      },
+      "webhookId": "ir-authenticated-enquiry"
+    },
+    {
+      "id": "extract-source-envelope",
+      "name": "Extract source envelope",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "validate-normalize-and-persist",
+      "name": "Validate normalize and persist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/intake' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-intake-auth",
+          "name": "Intake Rescue \u00b7 Intake"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "repeated-submission?",
+      "name": "Repeated submission?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "duplicate",
+              "leftValue": "={{ $json.duplicate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "qualify-and-route",
+      "name": "Qualify and route",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/internal/leads/' + $json.lead_id + '/qualify' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "generate-approval-draft",
+      "name": "Generate approval draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.IR_API_URL + '/internal/leads/' + $json.lead_id + '/draft' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ir-worker-auth",
+          "name": "Intake Rescue \u00b7 Worker"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "id": "return-durable-intake-receipt",
+      "name": "Return durable intake receipt",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1350,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($('Validate normalize and persist').item.json) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "note-20020",
+      "name": "Note 20020",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        20
+      ],
+      "parameters": {
+        "content": "## Intake \u2192 human control\nEach source supplies a stable event_id. Validation and identity constraints commit atomically in SQLite.\nDuplicate events return the original receipt; conflicting event payloads fail.",
+        "width": 650,
+        "height": 180
+      }
+    },
+    {
+      "id": "note-90020",
+      "name": "Note 90020",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        900,
+        20
+      ],
+      "parameters": {
+        "content": "## No send step here\nUncertain/invalid records \u2192 review.\nValid permissioned records \u2192 a pending draft.\nThe dashboard records a decision on the exact draft revision.",
+        "width": 600,
+        "height": 180
+      }
+    }
+  ],
+  "connections": {
+    "Authenticated enquiry": {
+      "main": [
+        [
+          {
+            "node": "Extract source envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract source envelope": {
+      "main": [
+        [
+          {
+            "node": "Validate normalize and persist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate normalize and persist": {
+      "main": [
+        [
+          {
+            "node": "Repeated submission?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Repeated submission?": {
+      "main": [
+        [
+          {
+            "node": "Return durable intake receipt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Qualify and route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualify and route": {
+      "main": [
+        [
+          {
+            "node": "Generate approval draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate approval draft": {
+      "main": [
+        [
+          {
+            "node": "Return durable intake receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "timezone": "Europe/London",
+    "executionTimeout": 60,
+    "errorWorkflow": "ir-errors"
+  },
+  "pinData": {},
+  "tags": []
+}
